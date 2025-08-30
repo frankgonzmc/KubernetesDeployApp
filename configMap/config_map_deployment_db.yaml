@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-config
+  namespace: my-app
+data:
+  MYSQL_DATABASE: mydb
+  MYSQL_USER: myuser

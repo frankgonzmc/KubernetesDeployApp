@@ -8,9 +8,9 @@ Crear un Namespace exclusivo para el proyecto (mi-app). Esto mantendrá todos lo
 
 2. Configurar la base de datos
 
-Crear un PersistentVolumeClaim (PVC) para almacenar datos.
+Crear un PersistentVolumeClaim (PVC) para almacenar datos. .. done
 
-Crear un Deployment de la base de datos (Postgres/MySQL).
+Crear un Deployment de la base de datos (MySQL). .. done
 
 Exponerlo con un Service tipo ClusterIP para que sea accesible solo dentro del cluster.
 
@@ -79,3 +79,31 @@ Exponer backend al exterior (NodePort o Ingress).
 Probar funcionamiento end-to-end.
 
 Extras opcionales.
+
+
+## Documentación
+
+### 1. Namespace:
+La infraestructura de la aplicación esta en un entorno aislado (namespace) donde estarán algunos recursos comunicandose entre sí.
+El namespace de este proyecto está en el directorio: /namespace que a nivel de todo el cluster se le llamará "my-app".
+
+### 2. Persistent Volume (PV):
+Para la base de datos primero se necesita de un lugar donde el pod_bd pueda gestionar los datos.
+En este proyecto se usa un persistent volume que mantiene los datos aun si el pod cae, reinicia, etc. Conocido como ciclo de vida del Pod.
+En este proyecto el persistent volume esta en el directorio volumes/volume_app.yaml
+El PVC esta configirado para entornos local como manual que necesita de una configuración manual de un PVC para servir como puente entre el PV y el Pod.
+En entornos reales de producción no es recomendable usar la configuración manual.
+Algo que aclarar es el recurso PV no vive dentro de un namespace específico, sino de forma global en el cluster.
+
+### 3. Persistent Volume Claim (PVC):
+Como se mencionó en la parte de PV, se necesitará de un puente de conexión entre el Pod_db y el PV, es por eso que se configura un PVC. En este caso se configura en el directorio volumes/pvc.yaml, este objeto si vive dentro de el namespace "my-app" y con las mismas características del PV, así Kubernetes sabe con cuál hacer la conexión.
+
+### 4. Deployment de la Base de Datos:
+Un deployment permitirá tener una replica de un Pod que correrá un contenedor con la imagen de MySql. Será necesario configurar algunos parámetros mas, como el lugar donde se guaradarán los datos, es para esto que se crearón el PV y PVC, para conexión solo es necesario especificar cuál es el PVC que usará nuestro Pod como volume. En entornos de Base de Datos tanbién se necesitan de credenciales como el usuario y la contraseña, pero para buenas prácticas de seguridad se usrán otros objetos. Cabe recalcar que un deployment si es un objeto Namespaced, por lo tanto este estará viviendo en nuestro Namespace "my-app".
+
+### 5. ConfigMap y Secrets para el Pod BD:
+Como se mencionó anteriormente en el deployment de la base de datos, se necesitará configurar algunos paramétros como credenciales.
+Esto se configuró en el deployment de db en "envFrom" que llama a dos recursos: ConfigMap y Secret. El recurso configMap se encuentra en el directorio configMap/config_map_deployment_db.yaml y contiene variables de entorno que son configuración no sensible como el nombre de la db y el usuario.
+En el caso de variables sensibles como contraseñas de user y root de la bd se usa los secrets en el directorio secrets/secret_deployment_db.yaml donde los datos estan en base 64.
+
+
