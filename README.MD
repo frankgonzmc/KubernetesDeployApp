@@ -101,9 +101,11 @@ Como se mencionó en la parte de PV, se necesitará de un puente de conexión en
 ### 4. Deployment de la Base de Datos:
 Un deployment permitirá tener una replica de un Pod que correrá un contenedor con la imagen de MySql. Será necesario configurar algunos parámetros mas, como el lugar donde se guaradarán los datos, es para esto que se crearón el PV y PVC, para conexión solo es necesario especificar cuál es el PVC que usará nuestro Pod como volume. En entornos de Base de Datos tanbién se necesitan de credenciales como el usuario y la contraseña, pero para buenas prácticas de seguridad se usrán otros objetos. Cabe recalcar que un deployment si es un objeto Namespaced, por lo tanto este estará viviendo en nuestro Namespace "my-app".
 
-### 5. ConfigMap y Secrets para el Pod BD:
+### 5. ConfigMap y Secrets para el Pod DB:
 Como se mencionó anteriormente en el deployment de la base de datos, se necesitará configurar algunos paramétros como credenciales.
 Esto se configuró en el deployment de db en "envFrom" que llama a dos recursos: ConfigMap y Secret. El recurso configMap se encuentra en el directorio configMap/config_map_deployment_db.yaml y contiene variables de entorno que son configuración no sensible como el nombre de la db y el usuario.
 En el caso de variables sensibles como contraseñas de user y root de la bd se usa los secrets en el directorio secrets/secret_deployment_db.yaml donde los datos estan en base 64.
 
+### 6. Service (ClusterIP) para deployment DB:
+En una infraestructura segura, un servicio de base de datos nunca se expone de manera pública, solo algunos recursos como las aplicaciones pueden interactuar con la base de datos, en Kubernetes, dentro del cluster nuestra DB necesitará abrir un puerto de comunicación interna solo dentro del cluster y en este caso en el namespace "my-app", los pods en el mismo namespace puede conectarse con el nombre del service, pero los que no se encuentran en el mismo namespace pero si en el cluster tendrían que usar FQDN (no aplicable en este caso que solo trabajamos dentro de un mismo namespace). El service CLusterIP permite a un pod abrir un puerto interno para comunicación, a través de una VIP (virtual ip) que como se mencionó nadie fuera del cluster podrá comunicarse con este. 
 
