@@ -1,10 +1,10 @@
-Flujo del Proyecto en Minikube
-1. Preparación del entorno
+Flujo del Proyecto en Minikube ... Done
+1. Preparación del entorno  .. Done
 
-Verificar que tienes Minikube y kubectl funcionando.
-Crear un Namespace exclusivo para el proyecto (mi-app). Esto mantendrá todos los recursos aislados.
+Verificar que tienes Minikube y kubectl funcionando.  .. Done
+Crear un Namespace exclusivo para el proyecto (mi-app). Esto mantendrá todos los recursos aislados. .. Done
 
-👉 Razón: trabajar con Namespaces te da la mentalidad de entornos separados (como dev/prod).
+👉 Razón: trabajar con Namespaces te da la mentalidad de entornos separados (como dev/prod). .. Done
 
 2. Configurar la base de datos
 
