@@ -1,5 +1,4 @@
 
-
 ## Documentación
 
 ### 1. Namespace:

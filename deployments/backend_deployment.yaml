@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: backend_deployment
+  name: backend-deployment
   namespace: my-app
 spec:
   replicas: 2
@@ -13,14 +13,19 @@ spec:
       labels:
         pod: backend
     spec:
+      #Un init container que nos permita asegurar que la BD ya esta corriendo
+      initContainers:
+        - name: wait-for-mysql
+          image: busybox:1.36
+          command: ['sh', '-c', 'until nc -z clusterip-db 3306; do echo "Esperando a MySQL..."; sleep 2; done;']
       containers:
-        - name: backend_container
-          image: frankgonzamc/flask-api:1.0  # <-- tu imagen Flask
+        - name: backend-container
+          image: frankgonzamc/flask-api:v2  # <-- tu imagen Flask
           ports:
             - containerPort: 5000 # puerto donde FLask trabaja normalmente
           env:
             - name: DB_HOST
-              value: clusterip_db # Este es el servicio clusterIP que expone el deploy de la BD dentro del cluster
+              value: clusterip-db # Este es el servicio clusterIP que expone el deploy de la BD dentro del cluster
             - name: DB_PORT
               value: "3306" #Apuntar al puerto 3306 del service
             - name: DB_USER #Esta ira como variable del entorno, se accedería como $DB_USER

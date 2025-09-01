@@ -1,7 +1,7 @@
-apiVersion: apss/v1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: frontend_deployment
+  name: frontend-deployment
   namespace: my-app
 spec:
   replicas: 2
@@ -14,8 +14,8 @@ spec:
         pod: frontend
     spec:
       containers:
-        - name: frontend_container
-          image: frankgonzamc/mi-frotend:1.0
+        - name: frontend-container
+          image: frankgonzamc/mi-frontend:1.0
           ports:
             - containerPort: 80
           volumeMounts: #Montar en un volumen el archivo especificado en el configMap object

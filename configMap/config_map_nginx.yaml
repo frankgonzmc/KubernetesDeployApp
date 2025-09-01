@@ -24,7 +24,7 @@ data:
 
         # Proxy para el backend, aquí usaremos el clusterIP del backend deploy
         location /api/ {
-          proxy_pass http://clusterip_backend:5000/;
+          proxy_pass http://clusterip-backend:5000/;
         }
       }
     }

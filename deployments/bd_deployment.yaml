@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: deployment_db
+  name: deployment-db
   namespace: my-app
 spec:
   replicas: 1
@@ -14,15 +14,15 @@ spec:
         pod: db
     spec:
       containers:
-        - name: container_db
+        - name: container-db
           image: mysql
           ports:
             - containerPort: 3306
           envFrom:
             - configMapRef:
-              name: mysql-config
+                name: mysql-config
             - secretRef:
-              name: secret-config
+                name: mysql-secret
           volumeMounts:
             - mountPath: /var/lib/mysql
               name: mysql-storage
