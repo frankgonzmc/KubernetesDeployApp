@@ -1,3 +1,32 @@
+## Objetivo
+En este proyecto construyo un cluster en Kubernetes que ejecute una aplicación que realice un CRUD básico. Poniendo a prueba conocimientos adquiridos con esta nueva herramienta y practicas de seguridad para el despliegue de un cluster. Podrás encontrar detalles en la parte de documentación y los comentarios en los mismos archivos indicando su función.
+
+## ¿Como usar?
+1. Asegurate de tener instalado **minikube** en tu entorno.
+2. Clona el repositorio.
+```bash
+git clone https://github.com/frankgonzmc/KubernetesDeployApp.git
+```
+3. Una vez clonado el repositorio dirigete hacia el directorio raíz.
+```bash
+cd KubernetesDeployApp
+```
+4. Dar permisos a los scripts que te permitirá desplegar automáticamente el cluster en tu entorno local.
+```bash
+chmod +x scripts/deploy.sh
+```
+5. Ejecutar el despliegue automático.
+```bash
+scripts/deploy.sh
+```
+6. Una vez hecho las pruebas, para la eliminación de los recursos, dar permiso al script **delete**.
+```bash
+chmod +x scripts/delete.sh
+```
+7. Para eliminar los recursos ejecuta el comando.
+```bash
+scripts/delete.sh
+```
 
 ## Documentación
 
