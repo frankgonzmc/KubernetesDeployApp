@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: backend_container
-          image: my-dockerhub-user/my-backend:latest  # <-- tu imagen Flask
+          image: frankpuertas/flask-api:1.0  # <-- tu imagen Flask
           ports:
             - containerPort: 5000 # puerto donde FLask trabaja normalmente
           env:
