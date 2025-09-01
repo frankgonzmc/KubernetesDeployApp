@@ -6,29 +6,29 @@ Crear un Namespace exclusivo para el proyecto (mi-app). Esto mantendrá todos lo
 
 👉 Razón: trabajar con Namespaces te da la mentalidad de entornos separados (como dev/prod). .. Done
 
-2. Configurar la base de datos
+2. Configurar la base de datos ..done
 
 Crear un PersistentVolumeClaim (PVC) para almacenar datos. .. done
 
 Crear un Deployment de la base de datos (MySQL). .. done
 
-Exponerlo con un Service tipo ClusterIP para que sea accesible solo dentro del cluster.
+Exponerlo con un Service tipo ClusterIP para que sea accesible solo dentro del cluster. ..done
 
-👉 Razón: la base de datos debe tener almacenamiento persistente y no debe ser expuesta públicamente.
+👉 Razón: la base de datos debe tener almacenamiento persistente y no debe ser expuesta públicamente. ..done
 
-3. Crear ConfigMaps y Secrets
+3. Crear ConfigMaps y Secrets .. done
 
-ConfigMap → variables de configuración no sensibles (nombre de la BD, host, etc.).
+ConfigMap → variables de configuración no sensibles (nombre de la BD, host, etc.). ..done
 
-Secret → credenciales de la base de datos.
+Secret → credenciales de la base de datos. ..done
 
-👉 Razón: separar configuración y secretos del código para buenas prácticas de seguridad y portabilidad.
+👉 Razón: separar configuración y secretos del código para buenas prácticas de seguridad y portabilidad. ..done
 
 4. Configurar el backend
 
-Crear un Deployment para tu aplicación backend (ej. Django, Flask, Node.js).
+Crear un Deployment para tu aplicación backend (ej. Django, Flask, Node.js). ..done
 
-Enlazar las variables de entorno al ConfigMap y Secret.
+Enlazar las variables de entorno al ConfigMap y Secret. ..done
 
 Exponerlo internamente con un Service tipo ClusterIP.
 
@@ -108,4 +108,7 @@ En el caso de variables sensibles como contraseñas de user y root de la bd se u
 
 ### 6. Service (ClusterIP) para deployment DB:
 En una infraestructura segura, un servicio de base de datos nunca se expone de manera pública, solo algunos recursos como las aplicaciones pueden interactuar con la base de datos, en Kubernetes, dentro del cluster nuestra DB necesitará abrir un puerto de comunicación interna solo dentro del cluster y en este caso en el namespace "my-app", los pods en el mismo namespace puede conectarse con el nombre del service, pero los que no se encuentran en el mismo namespace pero si en el cluster tendrían que usar FQDN (no aplicable en este caso que solo trabajamos dentro de un mismo namespace). El service CLusterIP permite a un pod abrir un puerto interno para comunicación, a través de una VIP (virtual ip) que como se mencionó nadie fuera del cluster podrá comunicarse con este. 
+
+### 7. Deployment del Backend:
+Para alojar el backend de la aplicación, usaremos un deployment con 2 replicas que levantará 2 Pods, cada uno con un container con la imagen de mi aplicación backend de pruebas que esta escrito con Flask, es una API Rest CRUD básica, que estará en Docker Hub de mi cuenta y será pública. También se le agrega las variables de entorno de la base de datos para que pueda interactuar con esta. Tanto como los secrets y configMaps de la BD también se usarán como variables de entorno, y también el service CLusterIP que permite exponer el deploy de la BD dentro del cluster, con esto nuestro backend puede iniciar la comunicación interna.
 

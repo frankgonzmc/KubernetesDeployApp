@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend_deployment
+  namespace: my-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      pod: backend
+  template:
+    metadata:
+      labels:
+        pod: backend
+    spec:
+      containers:
+        - name: backend_container
+          image: my-dockerhub-user/my-backend:latest  # <-- tu imagen Flask
+          ports:
+            - containerPort: 5000 # puerto donde FLask trabaja normalmente
+          env:
+            - name: DB_HOST
+              value: clusterip_db # Este es el servicio clusterIP que expone el deploy de la BD dentro del cluster
+            - name: DB_PORT
+              value: "3306" #Apuntar al puerto 3306 del service
+            - name: DB_USER #Esta ira como variable del entorno, se accedería como $DB_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: mysql-config #Dentro del namespace llamará al configMap que tiene el name "mysql-config"
+                  key: MYSQL_USER
+            - name: DB_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: mysql-config
+                  key: MYSQL_DATABASE
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: MYSQL_PASSWORD
+            
+            
