@@ -1,0 +1,30 @@
+#Usamos un configmap como archivo de configuracion ya que nginx cambia frecuentemente
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-config
+  namespace: my-app
+data:
+  nginx.conf: |
+    events {}
+    http {
+      include       /etc/nginx/mime.types;
+      default_type  application/octet-stream;
+
+      server {
+        listen 80;
+
+        # Servir frontend (React)
+        root /usr/share/nginx/html;
+        index index.html;
+
+        location / {
+          try_files $uri /index.html;
+        }
+
+        # Proxy para el backend, aquí usaremos el clusterIP del backend deploy
+        location /api/ {
+          proxy_pass http://clusterip_backend:5000/;
+        }
+      }
+    }

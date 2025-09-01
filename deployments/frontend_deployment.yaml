@@ -1,0 +1,28 @@
+apiVersion: apss/v1
+kind: Deployment
+metadata:
+  name: frontend_deployment
+  namespace: my-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      pod: frontend
+  template:
+    metadata:
+      labels:
+        pod: frontend
+    spec:
+      containers:
+        - name: frontend_container
+          image: mi_imagen
+          ports:
+            - containerPort: 80
+          volumeMounts: #Montar en un volumen el archivo especificado en el configMap object
+            - name: nginx-config-volume
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf
+      volumes: #Usar el archivo montado anteriormente para usarlo como configuracion
+        - name: nginx-config-volume
+          configMap:
+            name: nginx-config

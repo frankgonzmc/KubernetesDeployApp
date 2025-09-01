@@ -101,7 +101,14 @@ En una infraestructura segura, un servicio de base de datos nunca se expone de m
 ### 7. Deployment del Backend:
 Para alojar el backend de la aplicación, usaremos un deployment [/deployments/backend_deployment.yaml] con 2 replicas que levantará 2 Pods, cada uno con un container con la imagen de mi aplicación backend de pruebas que esta escrito con Flask, es una API Rest CRUD básica, que estará en Docker Hub de mi cuenta y será pública. También se le agrega las variables de entorno de la base de datos para que pueda interactuar con esta. Tanto como los secrets y configMaps de la BD también se usarán como variables de entorno, y también el service CLusterIP que permite exponer el deploy de la BD dentro del cluster, con esto nuestro backend puede iniciar la comunicación interna.
 
-### 8. Service (Cluster IP) para el deploy Backend_
+### 8. Service (Cluster IP) para el deploy Backend:
 Según la arquitectura, nuestra aplicación es una API Rest, la aplicación ya hace conexión con la base de datos por medio del service ClusterIP, pero ahora se necesita que el backend tambipen se exponga dentro del cluster para ser consumido por el deployment del Frontend que se mostrará mas adelante. Es por eso que tambien con un Service ClusterIP podemos hacer esto. El service está en "services/clusterip_deployment_backend.yaml".
 
+### 9. ConfigMap como archivo de configuración NGINX:
+Para nuestra arquitectura usamos un servidor proxy, en este caso NGINX, que contendrá los archivos compilados de React, y cualquier usuario que haga una petición a este servicio expuesto se le responderá con los archivos estáticos, si la petición necesita consumir la API del backend, el servidor Proxy va redirigir el tráfico hacia el service ClusterIP del deploy backend a la cual solo este tiene acceso dentro del cluster. La ruta de este archivo es "/configMap/config_map_nginx.yaml"
 
+### 10. Deployment Frontend:
+Nestro deployment del frontend contiene una imagen construida de NGINX, donde la aplicación react construida esta en la ruta de archivos estáticos que sirve el servidor Proxy. Y a su vez usa la configuracion anterior (ConfigMap de NGINX) para ser proxy de backend y frontend por medio de un volumen dentro de los Pods. El archivo esta en "/deployments/frontend_deployment.yaml".
+
+### 11. Service NodePort para el Deploy Frontend:
+Como ya tenemos un deploy para el frontend sirviendo como servidor proxy, solo faltaría hacer que este sea accesible desde fuera del cluster. Para lograr esto podemos usar el service Node Port para que cualquier usuario pueda interactuar con el servicio. En este caso usamos el puerto 80 de nuestro deploy pero para hacerlo público fuera a nivel de cluster usaremos el puerto 30080. El archivo se encuentra en "/services/nodeport_deployment_frontend.yaml".
